@@ -77,7 +77,12 @@ module.exports = {
           externalLinksRel: ['noopener', 'noreferrer'],
           plugins: [
             // '@gridsome/remark-prismjs',
-            'gridsome-remark-katex'
+            ['gridsome-remark-katex', {
+              macros: {
+                '\\term': '\\text{#1}',
+                '\\nterm': '\\langle \\text{#1} \\rangle'
+              }
+            }]
           ]
         }
       }
