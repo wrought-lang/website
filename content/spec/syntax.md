@@ -29,6 +29,9 @@ Wrought treats sequences of contiguous whitespace characters as a whitespace tok
 
 ### Keywords
 
+$$
+L = \frac{1}{2} \rho v^2 S C_L
+$$
 
 ## Grammar
 

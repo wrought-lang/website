@@ -7,7 +7,8 @@
     "explore": "gridsome explore"
   },
   "dependencies": {
-    "gridsome": "^0.7.0"
+    "gridsome": "^0.7.0",
+    "gridsome-remark-katex": "^0.1.1"
   },
   "devDependencies": {
     "@gridsome/plugin-google-analytics": "^0.1.0",

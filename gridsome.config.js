@@ -76,7 +76,8 @@ module.exports = {
           externalLinksTarget: '_blank',
           externalLinksRel: ['noopener', 'noreferrer'],
           plugins: [
-            '@gridsome/remark-prismjs'
+            // '@gridsome/remark-prismjs',
+            'gridsome-remark-katex'
           ]
         }
       }
