@@ -36,6 +36,7 @@ module.exports = {
           {
             title: 'Other Info',
             items: [
+              '/references/',
               '/contributing/',
               '/getting-started/',
             ]
@@ -48,6 +49,7 @@ module.exports = {
           {
             title: 'Info',
             items: [
+              '/references/',
               '/contributing/',
               '/getting-started/',
             ]
@@ -78,6 +80,7 @@ module.exports = {
           plugins: [
             // '@gridsome/remark-prismjs',
             ['gridsome-remark-katex', {
+              output: 'html',
               macros: {
                 '\\term': '\\text{#1}',
                 '\\nterm': '\\langle \\text{#1} \\rangle'
