@@ -14,6 +14,14 @@ The logical structure of elements is represented by an abstract syntax, denoted 
 ### Module Element
 The module element represents a WebAssembly module and any additional Wrought types or information.
 
+$$
+\begin{aligned}
+    \nterm{module} &\Coloneqq \nterm{item}^\ast \\ 
+    \nterm{item} &\Coloneqq \nterm{import} \mid \nterm{func} \mid \nterm{table} \mid \nterm{mem} \mid \nterm{global} \\ 
+    \nterm{item} &\Coloneqq \nterm{struct} \\
+\end{aligned}
+$$
+
 ### Top-Level Elements
 
 ### Function-Level Elements
