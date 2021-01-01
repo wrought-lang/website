@@ -17,7 +17,18 @@ Wrought allows only single-line double-slash prefixed comments.
 //[^\n]*
 ```
 
-### 
+### String Literals (literal-str)
+* UTF-8 Literal - `"\\.|[^\\"])*"`
+* Raw Literal - `'(\\.|[^\\'])*'`
+
+### Whitespace
+Wrought treats sequences of contiguous whitespace characters as a whitespace token.
+```
+[ \n\t\f]+
+```
+
+### Keywords
+
 
 ## Grammar
 
