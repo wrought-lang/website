@@ -55,6 +55,7 @@ query {
 import Sidebar from "@/components/Sidebar";
 import LayoutHeader from "@/components/LayoutHeader";
 import { MenuIcon, XIcon } from 'vue-feather-icons';
+import 'katex/dist/katex.min.css'
 
 export default {
   components: {

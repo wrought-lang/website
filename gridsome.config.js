@@ -14,7 +14,7 @@ module.exports = {
   settings: {
     web: false,
     twitter: false,
-    github: false,
+    github: 'https://github.com/wrought-lang/website',
     nav: {
       links: [
         { path: '/spec/', title: 'Docs' }
