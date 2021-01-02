@@ -50,7 +50,7 @@ $$
 | delimiters | $\terms{,}, \terms{.}, \terms{::}, \terms{;}$ |
 | misc       | $\terms{..}, \terms{:}, \terms{->}$ |
 | arithmetic | $\terms{+}, \terms{+=}, \terms{-}, \terms{-=}, \terms{*}, \terms{*=}, \terms{/}, \terms{/=}$ |
-| bitwise    | $``\vert", ``\vert=", \terms{\verb@^@}, \terms{\verb@^=@}, \terms{\verb@&@}, \terms{\verb@&=@}$ |
+| bitwise    | $``\vert", ``\vert\term{=}", \terms{\verb@^@}, \terms{\verb@^=@}, \terms{\verb@&@}, \terms{\verb@&=@}$ |
 | comparison | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
 
 ### Identifiers
@@ -217,16 +217,18 @@ There are two main distinct kinds of expressions:
 
 $$
 \begin{aligned}
-    \nterm{stmt-expr} &\Coloneqq \nterm{stmt-let} \mid \nterm{stmt-if} \\
-    \nterm{stmt-expr} &\Coloneqq \nterm{inline-expr} \term{;} \nterm{next-expr} \\
-    \nterm{stmt-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt-expr} \term{\}} \nterm{next-expr} \\
-    \nterm{stmt-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt-expr} \term{\}} \term{else} \term{\{} \nterm{stmt-expr} \term{\}} \nterm{next-expr} \\
-    \nterm{stmt-let} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \nterm{next-expr} \\
-    \nterm{stmt-let} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \nterm{next-expr} \\
-    \nterm{stmt-for} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{ident} \term{\{} \nterm{stmt-expr} \term{\}} \\
-    \nterm{stmt-for} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{inline-expr} \term{..} \nterm{inline-expr} \term{\{} \nterm{stmt-expr} \term{\}} \\
-    \nterm{stmt-loop} &\Coloneqq \term{loop} \term{\{} \nterm{stmt-expr} \term{\}} \\
-    \nterm{next-expr} &\Coloneqq \lambda \mid \nterm{stmt-expr} \mid \nterm{inline-expr} \\
+    \nterm{stmt} &\coloneqq \nterm{stmt-expr}^\ast \nterm{inline-expr}? \\
+    \nterm{stmt-expr} &\Coloneqq \nterm{inline-expr} \term{;} \\
+    \nterm{stmt-expr} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-expr} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt} \term{\}} \thickspace  \term{else} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-expr} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{ident} \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-expr} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{inline-expr} \term{..} \nterm{inline-expr} \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-expr} &\Coloneqq \term{loop} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-expr} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \\
+    \nterm{stmt-expr} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \\
+    \nterm{stmt-expr} &\Coloneqq \term{break} \term{;} \\
+    \nterm{stmt-expr} &\Coloneqq \term{continue} \term{;} \\
+    \nterm{stmt-expr} &\Coloneqq \term{return} \thickspace \nterm{expr} \term{;} \\
 \end{aligned}
 $$
 
@@ -238,7 +240,7 @@ $$
     \nterm{inline-expr} &\Coloneqq \term{\{} \nterm{block-expr} \term{\}} \\
     \nterm{inline-expr} &\Coloneqq \term{(} \nterm{inline-expr} \term{)} \\
     \nterm{inline-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{expr} \term{\}} \\
-    \nterm{inline-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{expr} \term{\}} \term{else} \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{inline-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{expr} \term{\}} \thickspace \term{else} \thickspace \term{\{} \nterm{expr} \term{\}} \\
 \end{aligned}
 $$
 
