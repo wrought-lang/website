@@ -46,7 +46,7 @@ Wrought treats sequences of contiguous whitespace characters as a whitespace tok
 | delimiters | $\terms{,}, \terms{.}, \terms{::}, \terms{;}$ |
 | misc       | $\terms{..}, \terms{:}, \terms{->}$ |
 | arithmetic | $\terms{+}, \terms{+=}, \terms{-}, \terms{-=}, \terms{*}, \terms{*=}, \terms{/}, \terms{/=}$ |
-| bitwise    | $\vert, \vert=, \terms{\verb@^@}, \terms{\verb@^=@}, \terms{\verb@&@}, \terms{\verb@&=@}$ |
+| bitwise    | $``\vert", ``\vert=", \terms{\verb@^@}, \terms{\verb@^=@}, \terms{\verb@&@}, \terms{\verb@&=@}$ |
 | comparison | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
 
 ### Identifiers (ident)
@@ -186,7 +186,7 @@ $$
 $$
 \begin{aligned}
     \nterm{global} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
-    \nterm{global} &\Coloneqq \term{let} \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
+    \nterm{global} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
 \end{aligned}
 $$
 
