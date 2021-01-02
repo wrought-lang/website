@@ -18,12 +18,9 @@ $$
 $$
 
 ### String Literals
-$$
-\begin{aligned}
-    \nterm{literal-str} &\Coloneqq \verb@"\\.|[^\\"])*"@ \\
-    \nterm{literal-str} &\Coloneqq \verb@'(\\.|[^\\'])*'@
-\end{aligned}
-$$
+Wrought accepts two kinds of string literal tokens:
+ * Standard Strings - which match the syntax of JSON strings as defined in ECMA-404
+ * Raw Strings - defined as $\term{r}\term{\#}^n\term{"}$, a sequence of characters not matching $\term{"}\term{\#}^n$, and ended by $\term{"}\term{\#}^n$
 
 ### Whitespace
 Wrought treats sequences of contiguous whitespace characters as a whitespace token.
