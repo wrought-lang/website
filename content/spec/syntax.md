@@ -13,19 +13,23 @@ and tie-breaking by precedence order.
 
 ### Comments
 Wrought allows only single-line double-slash prefixed comments.
-```
-//[^\n]*
-```
+$$
+\nterm{comment} \Coloneqq \verb@//[^\n]*@
+$$
 
-### String Literals (literal-str)
-* UTF-8 Literal - `"\\.|[^\\"])*"`
-* Raw Literal - `'(\\.|[^\\'])*'`
+### String Literals
+$$
+\begin{aligned}
+    \nterm{literal-str} &\Coloneqq \verb@"\\.|[^\\"])*"@ \\
+    \nterm{literal-str} &\Coloneqq \verb@'(\\.|[^\\'])*'@
+\end{aligned}
+$$
 
 ### Whitespace
 Wrought treats sequences of contiguous whitespace characters as a whitespace token.
-```
-[ \n\t\f]+
-```
+$$
+\nterm{ws} \Coloneqq \verb@[ \n\t\f]+@
+$$
 
 ### Keywords
 
@@ -49,17 +53,21 @@ Wrought treats sequences of contiguous whitespace characters as a whitespace tok
 | bitwise    | $``\vert", ``\vert=", \terms{\verb@^@}, \terms{\verb@^=@}, \terms{\verb@&@}, \terms{\verb@&=@}$ |
 | comparison | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
 
-### Identifiers (ident)
+### Identifiers
 Wrought identifiers are made up of one underscore or letter followed by zero or more letters, underscores, or digits.
 
-```
-[_a-zA-Z][_a-zA-Z0-9]*
-```
+$$
+\nterm{ident} \coloneqq \verb@[_a-zA-Z][_a-zA-Z0-9]*@
+$$
 
-### Numeric Literals (literal-num)
- * Decimal Numbers - `[-+]?[1-9][0-9]*(\.[0-9]*)`
- * Binary Numbers - `0b[01]+`
- * Hexadecimal Numbers - `0x[0-9a-fA-F][0-9a-fA-F]`
+### Numeric Literals
+$$
+\begin{aligned}
+    \nterm{literal-num} &\Coloneqq \verb@[-+]?[1-9][0-9]*(\.[0-9]*)@ \\ 
+    \nterm{literal-num} &\Coloneqq \verb@0b[01]+@ \\
+    \nterm{literal-num} &\Coloneqq \verb@0x[0-9a-fA-F][0-9a-fA-F]@ \\
+\end{aligned}
+$$
 
 
 ## Grammar
@@ -214,7 +222,7 @@ $$
     \nterm{stmt-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt-expr} \term{\}} \nterm{next-expr} \\
     \nterm{stmt-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt-expr} \term{\}} \term{else} \term{\{} \nterm{stmt-expr} \term{\}} \nterm{next-expr} \\
     \nterm{stmt-let} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \nterm{next-expr} \\
-    \nterm{stmt-let} &\Coloneqq \term{let} \term{mut} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \nterm{next-expr} \\
+    \nterm{stmt-let} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \nterm{next-expr} \\
     \nterm{stmt-for} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{ident} \term{\{} \nterm{stmt-expr} \term{\}} \\
     \nterm{stmt-for} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{inline-expr} \term{..} \nterm{inline-expr} \term{\{} \nterm{stmt-expr} \term{\}} \\
     \nterm{stmt-loop} &\Coloneqq \term{loop} \term{\{} \nterm{stmt-expr} \term{\}} \\
