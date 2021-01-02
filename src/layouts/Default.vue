@@ -125,6 +125,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'katex/dist/katex.min.css';
+
 :root {
   --color-ui-background: theme('colors.white');
   --color-ui-typo: theme('colors.gray.700');
