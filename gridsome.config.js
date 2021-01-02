@@ -82,7 +82,8 @@ module.exports = {
             ['gridsome-remark-katex', {
               output: 'html',
               macros: {
-                '\\term': '\\text{#1}',
+                '\\term': '\\texttt{#1}',
+                '\\terms': '``\\texttt{#1}"',
                 '\\nterm': '\\langle \\text{#1} \\rangle'
               }
             }]

@@ -29,6 +29,39 @@ Wrought treats sequences of contiguous whitespace characters as a whitespace tok
 
 ### Keywords
 
+| Kind          | Tokens |
+| ------------- | ------ |
+| module        | $\term{export}, \term{import}, \term{from}, \term{fn}, \term{table}, \term{mem}$ |
+| control       | $\term{if}, \term{for}, \term{in}, \term{loop}, \term{break}, \term{continue}, \term{return}$ |
+| pointer types | $ \term{Ptr}, \term{Slice}$ |
+| int types     | $\term{i8}, \term{i16}, \term{i32}, \term{i64}, \term{s8}, \term{s16}, \term{s32}, \term{s64}, \term{u8}, \term{u16}, \term{u32}, \term{u64}$ |
+| float types   | $\term{f32}, \term{f64}$ |
+| misc          | $\term{as}, \term{let}$ |
+
+### Symbols and Operators
+
+| Kind       | Tokens |
+| ---------- | ------ |
+| paired     | $\terms{[}, \terms{]}, \terms{(}, \terms{)}, \terms{\{}, \terms{\}}$ |
+| delimiters | $\terms{,}, \terms{.}, \terms{::}, \terms{;}$ |
+| misc       | $\terms{..}, \terms{:}, \terms{->}$ |
+| arithmetic | $\terms{+}, \terms{+=}, \terms{-}, \terms{-=}, \terms{*}, \terms{*=}, \terms{/}, \terms{/=}$ |
+| bitwise    | $\vert, \vert=, \terms{\verb@^@}, \terms{\verb@^=@}, \terms{\verb@&@}, \terms{\verb@&=@}$ |
+| comparison | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
+
+### Identifiers (ident)
+Wrought identifiers are made up of one underscore or letter followed by zero or more letters, underscores, or digits.
+
+```
+[_a-zA-Z][_a-zA-Z0-9]*
+```
+
+### Numeric Literals (literal-num)
+ * Decimal Numbers - `[-+]?[1-9][0-9]*(\.[0-9]*)`
+ * Binary Numbers - `0b[01]+`
+ * Hexadecimal Numbers - `0x[0-9a-fA-F][0-9a-fA-F]`
+
+
 ## Grammar
 The Wrought language is defined using a context-free grammar where the terminals are tokens produced by the lexer.
 The grammar is written in Backus-Naur Form, with the addition of the Kleene-Star operator.
@@ -43,9 +76,6 @@ A single unparenthesized type is equivalent to a parenthesized sequence one elem
 The empty parenthesized list type is the unit type and is the result for expressions which have no usable value.
 
 $$
-\gdef\term#1{ \text{#1} }
-\gdef\nterm#1{\langle \text{#1} \rangle}
-
 \nterm{restype} \Coloneqq \nterm{valtype} \mid \term{(} \nterm{valtype}^\ast \term{)}
 $$
 
@@ -60,7 +90,7 @@ $$
     \nterm{basic-val} &\Coloneqq \term{i32} \mid \term{i64} \mid \term{u32} \mid \term{u64} \mid \term{s32} \mid \term{s64} \mid\term{f32} \mid \term{f64} \\
     \nterm{pointer-val} &\Coloneqq \term{Ptr} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \mid \term{Slice} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \\
     \nterm{p-options} &\Coloneqq \lambda \mid  \term{,} \nterm{NNI} \mid  \term{,} \nterm{NNI} \term{,} \nterm{NNI} \mid  \term{,} \nterm{NNI} \term{,} \nterm{NNI} \term{,} \nterm{NNI} \\
-    \nterm{NNI} &\Coloneqq \term{non-negative integer} \\
+    \nterm{NNI} &\Coloneqq \textit{non-negative integer} \\
 \end{aligned}
 $$
 
