@@ -1,6 +1,6 @@
 ---
 description: ''
-sidebar: 'spec'
+sidebar: 'sidebar'
 next: '/spec/syntax/'
 ---
 

@@ -1,6 +1,6 @@
 ---
 description: 'Get Involved'
-sidebar: 'info'
+sidebar: 'sidebar'
 next: '/info/references/'
 prev: '/info/why-wrought/'
 ---

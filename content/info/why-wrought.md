@@ -1,6 +1,6 @@
 ---
 description: 'Why does the Wrought programming language exist?'
-sidebar: 'info'
+sidebar: 'sidebar'
 prev: '/info/'
 next: '/info/get-involved/'
 ---

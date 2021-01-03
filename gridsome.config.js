@@ -22,30 +22,7 @@ module.exports = {
     },
     sidebar: [
       {
-        name: 'spec',
-        sections: [
-          {
-            title: 'Spec',
-            items: [
-              '/spec/',
-              '/spec/syntax/',
-              '/spec/semantics/',
-              '/spec/wasm-output/',
-            ]
-          },
-          {
-            title: 'Other Info',
-            items: [
-              '/info/',
-              '/info/why-wrought/',
-              '/info/get-involved/',
-              '/info/references/'
-            ]
-          }
-        ]
-      },
-      {
-        name: 'info',
+        name: 'sidebar',
         sections: [
           {
             title: 'Info',

@@ -1,11 +1,13 @@
 ---
 description: ''
-sidebar: 'spec'
+sidebar: 'sidebar'
 next: '/spec/wasm-output/'
 prev: '/spec/syntax/'
 ---
 
 # Semantics
+
+**This page is very early in development**
 
 ## Elements
 The output of the semantic analysis phase is a fully resolved module element.
@@ -31,6 +33,17 @@ $$
 ## Environments
 
 ### Environment
+An environment is a mapping of identifiers to element IDs.
+
+ * The empty environment
+ 
+ $$\{\}$$
+ 
+ * Derived environment
+
+ $$\mathrm{parent} \thickspace \mathtt{with} \thickspace [ \mathrm{ident} ] = \nterm{element-id} $$
+
+
 
 ### Module Environment
 

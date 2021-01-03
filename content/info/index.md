@@ -1,6 +1,6 @@
 ---
 description: ''
-sidebar: 'info'
+sidebar: 'sidebar'
 next: '/info/get-involved/'
 ---
 

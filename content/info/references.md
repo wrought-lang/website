@@ -1,6 +1,6 @@
 ---
 description: 'The various sources of information that were used to create this project.'
-sidebar: 'info'
+sidebar: 'sidebar'
 prev: '/info/get-involved/'
 ---
 
