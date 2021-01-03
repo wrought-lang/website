@@ -17,7 +17,7 @@ module.exports = {
     github: 'https://github.com/wrought-lang/website',
     nav: {
       links: [
-        { path: '/spec/', title: 'Docs' }
+        { path: '/info/', title: 'Docs' }
       ]
     },
     sidebar: [
@@ -36,9 +36,10 @@ module.exports = {
           {
             title: 'Other Info',
             items: [
-              '/references/',
-              '/contributing/',
-              '/getting-started/',
+              '/info/',
+              '/info/why-wrought/',
+              '/info/get-involved/',
+              '/info/references/'
             ]
           }
         ]
@@ -49,9 +50,10 @@ module.exports = {
           {
             title: 'Info',
             items: [
-              '/references/',
-              '/contributing/',
-              '/getting-started/',
+              '/info/',
+              '/info/why-wrought/',
+              '/info/get-involved/',
+              '/info/references/'
             ]
           },
           {

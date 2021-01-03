@@ -1,7 +1,7 @@
 ---
 description: 'The various sources of information that were used to create this project.'
 sidebar: 'info'
-next: '/contributing/'
+prev: '/info/get-involved/'
 ---
 
 # References

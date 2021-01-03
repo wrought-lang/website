@@ -14,7 +14,7 @@ and tie-breaking by precedence order.
 ### Comments
 Wrought allows only single-line double-slash prefixed comments.
 $$
-\nterm{comment} \Coloneqq \verb@//[^\n]*@
+\nterm{comment} \Coloneqq /\verb@//[^\n]*@/
 $$
 
 ### String Literals
@@ -25,7 +25,7 @@ Wrought provides two ways of defining strings interpretted as UTF-8 byte values 
 ### Whitespace
 Wrought treats sequences of contiguous whitespace characters as a whitespace token.
 $$
-\nterm{ws} \Coloneqq \verb@[ \n\t\f]+@
+\nterm{ws} \Coloneqq /\verb@[ \n\t\f]+@/
 $$
 
 ### Keywords
@@ -54,15 +54,15 @@ $$
 Wrought identifiers are made up of one underscore or letter followed by zero or more letters, underscores, or digits.
 
 $$
-\nterm{ident} \coloneqq \verb@[_a-zA-Z][_a-zA-Z0-9]*@
+\nterm{ident} \coloneqq /\verb@[_a-zA-Z][_a-zA-Z0-9]*@/
 $$
 
 ### Numeric Literals
 $$
 \begin{aligned}
-    \nterm{literal-num} &\Coloneqq \verb@[-+]?[1-9][0-9]*(\.[0-9]*)@ \\ 
-    \nterm{literal-num} &\Coloneqq \verb@0b[01]+@ \\
-    \nterm{literal-num} &\Coloneqq \verb@0x[0-9a-fA-F][0-9a-fA-F]@ \\
+    \nterm{literal-num} &\Coloneqq /\verb@[-+]?[1-9][0-9]*(\.[0-9]*)@/ \\ 
+    \nterm{literal-num} &\Coloneqq /\verb@0b[01]+@/ \\
+    \nterm{literal-num} &\Coloneqq /\verb@0x[0-9a-fA-F][0-9a-fA-F]@/ \\
 \end{aligned}
 $$
 
@@ -153,11 +153,10 @@ $$
 
 #### Functions
 A function is a named parameterized expression which may have side effects and behave differently based on side-causes.
-The non-terminal block-expr is defined in \ref{grammar-expression}.
 
 $$
 \begin{aligned}
-    \nterm{func} &\Coloneqq \nterm{func-sig} \term{\{} \nterm{block-expr} \term{\}} \\
+    \nterm{func} &\Coloneqq \nterm{func-sig} \term{\{} \nterm{stmt} \term{\}} \\
     \nterm{func-sig} &\Coloneqq \term{fn} \nterm{ident} \term{(} \nterm{func-args} \term{)} \term{->} \nterm{restype} \\
     \nterm{func-sig} &\Coloneqq \term{fn} \nterm{ident} \term{(} \nterm{func-args} \term{)} \\
     \nterm{func-args} &\Coloneqq \nterm{ident} \term{:} \nterm{valtype} \mid \nterm{func-args} \term{,} \nterm{ident} \term{:} \nterm{valtype} \\
@@ -235,9 +234,11 @@ $$
     \nterm{expr} &\Coloneqq \term{(} \nterm{expr} \term{)} \\
     \nterm{expr} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{expr} \term{\}} \\
     \nterm{expr} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{expr} \term{\}} \thickspace \term{else} \thickspace \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr} &\Coloneqq \nterm{ident} (\term{::} \nterm{ident})^\ast \\
     \nterm{expr} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
     \nterm{expr} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
     \nterm{expr} &\Coloneqq \term{!} \nterm{expr} \\
+    \nterm{expr} &\Coloneqq \term{*} \nterm{expr} \\
     \nterm{expr} &\Coloneqq \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
     \nterm{expr-args} &\Coloneqq \nterm{expr} \mid \nterm{expr-args} \term{,} \nterm{expr} \\
 \end{aligned}
