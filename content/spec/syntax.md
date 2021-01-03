@@ -18,9 +18,9 @@ $$
 $$
 
 ### String Literals
-Wrought accepts two kinds of string literal tokens:
+Wrought provides two ways of defining strings interpretted as UTF-8 byte values :
  * Standard Strings - which match the syntax of JSON strings as defined in ECMA-404
- * Raw Strings - defined as $\term{r}\term{\#}^n\term{"}$, a sequence of characters not matching $\term{"}\term{\#}^n$, and ended by $\term{"}\term{\#}^n$
+ * Raw Strings - input that, for some $n$, begins with $\term{r}\term{\#}^n\term{"}$, ends with $\term{"}\term{\#}^n$, and does not contain the end pattern.
 
 ### Whitespace
 Wrought treats sequences of contiguous whitespace characters as a whitespace token.
@@ -37,18 +37,18 @@ $$
 | pointer types | $ \term{Ptr}, \term{Slice}$ |
 | int types     | $\term{i8}, \term{i16}, \term{i32}, \term{i64}, \term{s8}, \term{s16}, \term{s32}, \term{s64}, \term{u8}, \term{u16}, \term{u32}, \term{u64}$ |
 | float types   | $\term{f32}, \term{f64}$ |
-| misc          | $\term{as}, \term{let}$ |
+| misc          | $\term{as}, \term{let}$, $\term{bool}$ |
 
 ### Symbols and Operators
 
-| Kind       | Tokens |
-| ---------- | ------ |
-| paired     | $\terms{[}, \terms{]}, \terms{(}, \terms{)}, \terms{\{}, \terms{\}}$ |
-| delimiters | $\terms{,}, \terms{.}, \terms{::}, \terms{;}$ |
-| misc       | $\terms{..}, \terms{:}, \terms{->}$ |
-| arithmetic | $\terms{+}, \terms{+=}, \terms{-}, \terms{-=}, \terms{*}, \terms{*=}, \terms{/}, \terms{/=}$ |
-| bitwise    | $``\vert", ``\vert\term{=}", \terms{\verb@^@}, \terms{\verb@^=@}, \terms{\verb@&@}, \terms{\verb@&=@}$ |
-| comparison | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
+| Kind              | Tokens |
+| ----------------- | ------ |
+| paired            | $\terms{[}, \terms{]}, \terms{(}, \terms{)}, \terms{\{}, \terms{\}}$ |
+| delimiters        | $\terms{,}, \terms{.}, \terms{::}, \terms{;}$ |
+| misc              | $\terms{..}, \terms{:}, \terms{->}$ |
+| arithmetic        | $\terms{+}, \terms{+=}, \terms{-}, \terms{-=}, \terms{*}, \terms{*=}, \terms{/}, \terms{/=}$ |
+| bitwise / logical | $\term{!}, ``\vert", ``\vert\term{=}", \terms{\verb@&@}, \terms{\verb@&=@}, \terms{\verb@^@}, \terms{\verb@^=@}$ |
+| comparison        | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
 
 ### Identifiers
 Wrought identifiers are made up of one underscore or letter followed by zero or more letters, underscores, or digits.
@@ -92,7 +92,7 @@ or the identifier of struct types.
 $$
 \begin{aligned}
     \nterm{valtype} &\Coloneqq \nterm{basic-val} \mid \nterm{pointer-val} \mid \nterm{ident} \\ 
-    \nterm{basic-val} &\Coloneqq \term{i32} \mid \term{i64} \mid \term{u32} \mid \term{u64} \mid \term{s32} \mid \term{s64} \mid\term{f32} \mid \term{f64} \\
+    \nterm{basic-val} &\Coloneqq \term{i32} \mid \term{i64} \mid \term{u32} \mid \term{u64} \mid \term{s32} \mid \term{s64} \mid \term{f32} \mid \term{f64} \mid \term{bool} \\
     \nterm{pointer-val} &\Coloneqq \term{Ptr} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \mid \term{Slice} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \\
     \nterm{p-options} &\Coloneqq \lambda \mid  \term{,} \nterm{NNI} \mid  \term{,} \nterm{NNI} \term{,} \nterm{NNI} \mid  \term{,} \nterm{NNI} \term{,} \nterm{NNI} \term{,} \nterm{NNI} \\
     \nterm{NNI} &\Coloneqq \textit{non-negative integer} \\
@@ -164,34 +164,25 @@ $$
 \end{aligned}
 $$
 
-#### Table
+#### Tables and Memory
 
 $$
 \begin{aligned}
-    \nterm{table} &\Coloneqq \term{table} \nterm{ident} \term{[} \nterm{literal-num} \term{]} \nterm{table-init}? \term{;} \\
-    \nterm{table-init} &\Coloneqq \term{=} \term{[} \nterm{table-sections} \term{]} \term{;} \\
-    \nterm{table-sections} &\Coloneqq \nterm{table-section} \mid \nterm{table-sections} \term{,} \nterm{table-section} \\
-    \nterm{table-section} &\Coloneqq \nterm{literal-num} \term{:} \nterm{ident} \\
+    \nterm{table} &\Coloneqq \term{table} \thickspace \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
+    \nterm{mem} &\Coloneqq \term{memory} \thickspace \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
+    \nterm{ident-array} &\Coloneqq \term{[} \nterm{idents} \term{]} \\
+    \nterm{exprs} &\Coloneqq \nterm{inline-expr} \mid \nterm{nums} \term{,} \nterm{inline-expr} \\
 \end{aligned}
 $$
 
-#### Memory
-
-$$
-\begin{aligned}
-    \nterm{mem} &\Coloneqq \term{memory} \nterm{ident} \term{[} \nterm{literal-num} \term{]} \nterm{mem-init}? \term{;} \\
-    \nterm{mem-init} &\Coloneqq \term{=} \term{[} \nterm{mem-sections} \term{]} \term{;} \\
-    \nterm{mem-sections} &\Coloneqq \nterm{mem-section} \mid \nterm{mem-sections} \term{,} \nterm{mem-section} \\
-    \nterm{mem-section} &\Coloneqq \nterm{literal-num} \term{:} \nterm{literal-num} \mid \nterm{literal-num} \term{:} \nterm{literal-str} \\
-\end{aligned}
-$$
-
-#### Global
+#### Globals and Statics
 
 $$
 \begin{aligned}
     \nterm{global} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
     \nterm{global} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
+    \nterm{static} &\Coloneqq \term{let} \thickspace \nterm{ident} \thickspace \term{@} \thickspace \nterm{static-loc} \thickspace  \term{=} \nterm{literal-num} \term{;} \\
+    \nterm{static-loc} &\Coloneqq \nterm{ident} \term{[} \nterm{literal-num} \term{:} \nterm{literal-num} \term{]} \\
 \end{aligned}
 $$
 
@@ -199,45 +190,56 @@ $$
 
 $$
 \begin{aligned}
-    \nterm{struct} &\Coloneqq \term{struct} \nterm{ident} \term{\{} \nterm{struct-body} \term{\}} \\
+    \nterm{struct} &\Coloneqq \term{struct} \thickspace \nterm{ident} \thickspace \term{\{} \nterm{struct-body} \term{\}} \\
     \nterm{struct-body} &\Coloneqq \nterm{ident} \term{:} \nterm{valtype} \mid \nterm{struct-body} \term{,} \nterm{ident} \term{:} \nterm{valtype} \\
 \end{aligned}
 $$
 
 ### Expressions
-There are two main distinct kinds of expressions:
-
- * Statements - Expressions within a pair of braces which can include loops and arbitrary control structures,
- * Inline Expressions - Expressions used in various value positions like function call arguments, right-hand side of assignments, and within unary or binary operations.
 
 #### Statements
+A statement is a type of expression which can be followed by another expression, which is syntactically and semantically it's child.
+The type of a statement depends on the type of the statements terminator $\nterm{stmt-end}$, statements without a terminator have the unit result type.
 
 $$
 \begin{aligned}
-    \nterm{stmt} &\coloneqq \nterm{stmt-expr}^\ast \nterm{inline-expr}? \\
-    \nterm{stmt-expr} &\Coloneqq \nterm{inline-expr} \term{;} \\
-    \nterm{stmt-expr} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-expr} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{stmt} \term{\}} \thickspace  \term{else} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-expr} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{ident} \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-expr} &\Coloneqq \term{for} \nterm{ident} \term{in} \nterm{inline-expr} \term{..} \nterm{inline-expr} \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-expr} &\Coloneqq \term{loop} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-expr} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \\
-    \nterm{stmt-expr} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{inline-expr} \term{;} \\
-    \nterm{stmt-expr} &\Coloneqq \term{break} \term{;} \\
-    \nterm{stmt-expr} &\Coloneqq \term{continue} \term{;} \\
-    \nterm{stmt-expr} &\Coloneqq \term{return} \thickspace \nterm{expr} \term{;} \\
+    \nterm{stmt} &\Coloneqq \nterm{stmt-entry} \nterm{stmt} \\
+    \nterm{stmt} &\Coloneqq \nterm{stmt-end} \\
+    \nterm{stmt} &\Coloneqq \lambda \\
+    \nterm{stmt-entry} &\Coloneqq \nterm{expr} \term{;} \\
+    \nterm{stmt-entry} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \thickspace \term{else} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{for} \thickspace \nterm{ident} \thickspace \term{in} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{for} \thickspace \nterm{ident} \thickspace \term{in} \thickspace \nterm{expr} \term{..} \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{loop} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{let} \thickspace \term{mut} \thickspace \nterm{ident} \thickspace \term{=} \thickspace \nterm{expr} \term{;} \\
+    \nterm{stmt-entry} &\Coloneqq \term{let} \thickspace \nterm{ident} \thickspace \term{=} \thickspace \nterm{expr} \term{;} \\
+    \nterm{stmt-entry} &\Coloneqq \nterm{lvalue} \thickspace \term{=} \thickspace \nterm{expr} \term{;} \\
+    \nterm{lvalue} &\Coloneqq \nterm{ident} \\
+    \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{.} \nterm{ident} \\
+    \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{[} \nterm{expr} \term{]} \\
+    \nterm{stmt-end} &\Coloneqq \term{break} \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \term{continue} \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \term{return} \thickspace \nterm{expr} \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \nterm{expr} \\
 \end{aligned}
 $$
 
 #### Inline Expressions
+Inline Expressions are used in various value positions,
+like function call arguments, right-hand side of assignments, and within unary or binary operations.
 
 $$
 \begin{aligned}
-    \nterm{inline-expr} &\Coloneqq \nterm{inline-if} \\
-    \nterm{inline-expr} &\Coloneqq \term{\{} \nterm{block-expr} \term{\}} \\
-    \nterm{inline-expr} &\Coloneqq \term{(} \nterm{inline-expr} \term{)} \\
-    \nterm{inline-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{expr} \term{\}} \\
-    \nterm{inline-if} &\Coloneqq \term{if} \nterm{inline-expr} \term{\{} \nterm{expr} \term{\}} \thickspace \term{else} \thickspace \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr} &\Coloneqq \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{expr} &\Coloneqq \term{(} \nterm{expr} \term{)} \\
+    \nterm{expr} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{expr} \term{\}} \thickspace \term{else} \thickspace \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
+    \nterm{expr} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
+    \nterm{expr} &\Coloneqq \term{!} \nterm{expr} \\
+    \nterm{expr} &\Coloneqq \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
+    \nterm{expr-args} &\Coloneqq \nterm{expr} \mid \nterm{expr-args} \term{,} \nterm{expr} \\
 \end{aligned}
 $$
 
