@@ -1,5 +1,5 @@
 ---
-description: ''
+description: 'An introduction to the Wrought programming language, its goals, and initial use cases.'
 sidebar: 'sidebar'
 next: '/info/why-wrought/'
 ---

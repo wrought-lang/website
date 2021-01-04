@@ -1,5 +1,5 @@
 ---
-description: ''
+description: 'The introduction to the Wrought programming language specification'
 sidebar: 'sidebar'
 next: '/spec/syntax/'
 ---

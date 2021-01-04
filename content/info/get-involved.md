@@ -1,5 +1,5 @@
 ---
-description: 'Get Involved'
+description: 'Get involved with the Wrought programming language project'
 sidebar: 'sidebar'
 next: '/info/references/'
 prev: '/info/why-wrought/'

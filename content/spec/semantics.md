@@ -1,5 +1,5 @@
 ---
-description: ''
+description: 'The definition of the formal semantics of Wrought source code'
 sidebar: 'sidebar'
 next: '/spec/wasm-output/'
 prev: '/spec/syntax/'
