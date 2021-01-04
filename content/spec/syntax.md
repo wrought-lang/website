@@ -14,8 +14,8 @@ Wrought is a programming language defined as a context-free grammar over an alph
 * Terminals are written in one of the following forms $\term{u32}, \term{for}, \terms{::}$
 * Terminals may be defined using regular expression patterns, as in $/\verb@[0-9]a*@/$
 * Non-terminals are written in the following way $\nterm{literal-num}, \nterm{expr}$
-* Grammar productions are of the form $\nterm{a} \Coloneqq \thickspace ...$, where the right-hand side is a combination of terminals and non-terminals
-* Grammar productions can be combined using the or operator, as in $\nterm{a} \Coloneqq \thickspace ... \mid ...$
+* Grammar productions are of the form $\nterm{a} \Coloneqq \; ...$, where the right-hand side is a combination of terminals and non-terminals
+* Grammar productions can be combined using the or operator, as in $\nterm{a} \Coloneqq \; ... \mid ...$
 
 ## Tokens
 Wrought source code is split into tokens by repeatedly consuming the longest string of characters that matches a token rule,
@@ -48,18 +48,19 @@ $$
 | pointer types | $ \term{Ptr}, \term{Slice}$ |
 | int types     | $\term{i8}, \term{i16}, \term{i32}, \term{i64}, \term{s8}, \term{s16}, \term{s32}, \term{s64}, \term{u8}, \term{u16}, \term{u32}, \term{u64}$ |
 | float types   | $\term{f32}, \term{f64}$ |
-| misc          | $\term{as}, \term{let}$, $\term{bool}$ |
+| misc          | $\term{as}, \term{let}$, $\term{bool}$, $\term{or}$, $\term{and}$ |
 
 ### Symbols and Operators
 
-| Kind              | Tokens |
-| ----------------- | ------ |
-| paired            | $\terms{[}, \terms{]}, \terms{(}, \terms{)}, \terms{\{}, \terms{\}}$ |
-| delimiters        | $\terms{,}, \terms{.}, \terms{::}, \terms{;}, \terms{@}$ |
-| misc              | $\terms{..}, \terms{:}, \terms{->}$ |
-| arithmetic        | $\terms{+}, \terms{+=}, \terms{-}, \terms{-=}, \terms{*}, \terms{*=}, \terms{/}, \terms{/=}$ |
-| bitwise / logical | $\term{!}, ``\vert", ``\vert\term{=}", \terms{\verb@&@}, \terms{\verb@&=@}, \terms{\verb@^@}, \terms{\verb@^=@}$ |
-| comparison        | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
+| Kind       | Tokens |
+| ---------- | ------ |
+| paired     | $\terms{[}, \terms{]}, \terms{(}, \terms{)}, \terms{\{}, \terms{\}}$ |
+| delimiters | $\terms{,}, \terms{.}, \terms{::}, \terms{;}, \terms{@}$ |
+| misc       | $\terms{..}, \terms{:}, \terms{->}$ |
+| arithmetic | $\terms{+}, \terms{-}, \terms{*}, \terms{/}, \terms{\verb@%@}$ |
+| bitwise    | $\terms{!}, ``\vert", \terms{\verb@&@}, \terms{\verb@^@}, \terms{>>}, \terms{>>}, \terms{>>}, \terms{>>>}$ |
+| op assign  | $``\vert\term{=}", \terms{\verb@&=@}, \terms{\verb@^=@}, \terms{+=}, \terms{-=}, \terms{*=}, \terms{/=}$ |
+| comparison | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
 
 ### Identifiers
 $$
@@ -181,8 +182,8 @@ $$
 
 $$
 \begin{aligned}
-    \nterm{table} &\Coloneqq \term{table} \thickspace \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
-    \nterm{mem} &\Coloneqq \term{memory} \thickspace \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
+    \nterm{table} &\Coloneqq \term{table} \; \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
+    \nterm{mem} &\Coloneqq \term{memory} \; \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
     \nterm{ident-array} &\Coloneqq \term{[} \nterm{idents} \term{]} \\
     \nterm{exprs} &\Coloneqq \nterm{inline-expr} \mid \nterm{nums} \term{,} \nterm{inline-expr} \\
 \end{aligned}
@@ -193,8 +194,8 @@ $$
 $$
 \begin{aligned}
     \nterm{global} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
-    \nterm{global} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
-    \nterm{static} &\Coloneqq \term{let} \thickspace \nterm{ident} \thickspace \term{@} \thickspace \nterm{static-loc} \thickspace  \term{=} \nterm{static-val} \term{;} \\
+    \nterm{global} &\Coloneqq \term{let} \; \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
+    \nterm{static} &\Coloneqq \term{let} \; \nterm{ident} \; \term{@} \; \nterm{static-loc} \;  \term{=} \nterm{static-val} \term{;} \\
     \nterm{static-loc} &\Coloneqq \nterm{ident} \term{[} \nterm{literal-num} \term{:} \nterm{literal-num} \term{]} \\
     \nterm{static-val} &\Coloneqq \term{[} \textit{comma-separated literal-nums} \term{]} \\
     \nterm{static-val} &\Coloneqq \nterm{literal-num} \mid  \nterm{literal-str} \\
@@ -205,7 +206,7 @@ $$
 
 $$
 \begin{aligned}
-    \nterm{struct} &\Coloneqq \term{struct} \thickspace \nterm{ident} \thickspace \term{\{} \nterm{struct-body} \term{\}} \\
+    \nterm{struct} &\Coloneqq \term{struct} \; \nterm{ident} \; \term{\{} \nterm{struct-body} \term{\}} \\
     \nterm{struct-body} &\Coloneqq \nterm{ident} \term{:} \nterm{valtype} \mid \nterm{struct-body} \term{,} \nterm{ident} \term{:} \nterm{valtype} \\
 \end{aligned}
 $$
@@ -222,20 +223,20 @@ $$
     \nterm{stmt} &\Coloneqq \nterm{stmt-end} \\
     \nterm{stmt} &\Coloneqq \lambda \\
     \nterm{stmt-entry} &\Coloneqq \nterm{expr} \term{;} \\
-    \nterm{stmt-entry} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \thickspace \term{else} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{for} \thickspace \nterm{ident} \thickspace \term{in} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{for} \thickspace \nterm{ident} \thickspace \term{in} \thickspace \nterm{expr} \term{..} \nterm{expr} \thickspace \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{loop} \thickspace  \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{let} \thickspace \term{mut} \thickspace \nterm{ident} \thickspace \term{=} \thickspace \nterm{expr} \term{;} \\
-    \nterm{stmt-entry} &\Coloneqq \term{let} \thickspace \nterm{ident} \thickspace \term{=} \thickspace \nterm{expr} \term{;} \\
-    \nterm{stmt-entry} &\Coloneqq \nterm{lvalue} \thickspace \term{=} \thickspace \nterm{expr} \term{;} \\
+    \nterm{stmt-entry} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \; \term{else} \;  \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \term{..} \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{loop} \;  \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{let} \; \term{mut} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
+    \nterm{stmt-entry} &\Coloneqq \term{let} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
+    \nterm{stmt-entry} &\Coloneqq \nterm{lvalue} \; \term{=} \; \nterm{expr} \term{;} \\
     \nterm{lvalue} &\Coloneqq \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{.} \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{[} \nterm{expr} \term{]} \\
     \nterm{stmt-end} &\Coloneqq \term{break} \term{;} \\
     \nterm{stmt-end} &\Coloneqq \term{continue} \term{;} \\
-    \nterm{stmt-end} &\Coloneqq \term{return} \thickspace \nterm{expr} \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \term{return} \; \nterm{expr} \term{;} \\
     \nterm{stmt-end} &\Coloneqq \nterm{expr} \\
 \end{aligned}
 $$
@@ -248,23 +249,42 @@ $$
 \begin{aligned}
     \nterm{expr} &\Coloneqq \term{\{} \nterm{stmt} \term{\}} \\
     \nterm{expr} &\Coloneqq \term{(} \nterm{expr} \term{)} \\
-    \nterm{expr} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{expr} \term{\}} \\
-    \nterm{expr} &\Coloneqq \term{if} \thickspace \nterm{expr} \thickspace \term{\{} \nterm{expr} \term{\}} \thickspace \term{else} \thickspace \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \; \term{else} \; \term{\{} \nterm{expr} \term{\}} \\
     \nterm{expr} &\Coloneqq \nterm{ident} (\term{::} \nterm{ident})^\ast \\
     \nterm{expr} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
     \nterm{expr} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
-    \nterm{expr} &\Coloneqq \term{!} \nterm{expr} \\
-    \nterm{expr} &\Coloneqq \term{*} \nterm{expr} \\
+    \nterm{expr} &\Coloneqq \nterm{unary-op} \nterm{expr} \\
     \nterm{expr} &\Coloneqq \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
     \nterm{expr-args} &\Coloneqq \nterm{expr} \mid \nterm{expr-args} \term{,} \nterm{expr} \\
+    \nterm{unary-op} &\Coloneqq \term{!} \mid \term{-} \mid \term{*} \\
 \end{aligned}
 $$
 
-#### Literals
+The expressions of binary operators are defined below and have grammatically encoded precedence.
 
 $$
 \begin{aligned}
-    \nterm{literal} &\Coloneqq \nterm{literal-str} \mid \nterm{literal-num} \\
-    \nterm{literal-num} &\Coloneqq \nterm{literal-decimal} \mid \nterm{literal-hex} \mid \nterm{literal-bin} \\
+    \nterm{expr} &\Coloneqq \nterm{expr-p9} \\
+    \nterm{expr-p9} &\Coloneqq \nterm{expr-p9} \; \nterm{op-prec9} \; \nterm{expr-p8} \mid \nterm{expr-p8} \\
+    \nterm{expr-p8} &\Coloneqq \nterm{expr-p8} \; \nterm{op-prec8} \; \nterm{expr-p7} \mid \nterm{expr-p7} \\
+    \nterm{expr-p7} &\Coloneqq \nterm{expr-p7} \; \nterm{op-prec7} \; \nterm{expr-p6} \mid \nterm{expr-p6} \\
+    \nterm{expr-p6} &\Coloneqq \nterm{expr-p6} \; \nterm{op-prec6} \; \nterm{expr-p5} \mid \nterm{expr-p5} \\
+    \nterm{expr-p5} &\Coloneqq \nterm{expr-p5} \; \nterm{op-prec5} \; \nterm{expr-p4} \mid \nterm{expr-p4} \\
+    \nterm{expr-p4} &\Coloneqq \nterm{expr-p4} \; \nterm{op-prec4} \; \nterm{expr-p3} \mid \nterm{expr-p3} \\
+    \nterm{expr-p3} &\Coloneqq \nterm{expr-p3} \; \nterm{op-prec3} \; \nterm{expr-p2} \mid \nterm{expr-p2} \\
+    \nterm{expr-p2} &\Coloneqq \nterm{expr-p2} \; \nterm{op-prec2} \; \nterm{expr-p1} \mid \nterm{expr-p1} \\
+    \nterm{expr-p1} &\Coloneqq \nterm{expr-p1} \; \nterm{op-prec1} \; \nterm{expr-p0} \mid \nterm{expr-p0} \\
+    \nterm{expr-p0} &\Coloneqq \nterm{expr-p0} \; \nterm{op-prec0} \; \nterm{expr} \mid \nterm{expr} \\
+    \nterm{op-prec0} &\Coloneqq \terms{*}, \terms{/}, \terms{\verb@%@} \\
+    \nterm{op-prec1} &\Coloneqq \terms{+}, \terms{-} \\
+    \nterm{op-prec2} &\Coloneqq \terms{<<}, \terms{>>}, \terms{>>>} \\
+    \nterm{op-prec3} &\Coloneqq \terms{<}, \terms{<=}, \terms{>}, \terms{>=} \\
+    \nterm{op-prec4} &\Coloneqq \terms{==}, \terms{!=} \\
+    \nterm{op-prec5} &\Coloneqq \terms{\&} \\
+    \nterm{op-prec6} &\Coloneqq \terms{\verb@^@} \\
+    \nterm{op-prec7} &\Coloneqq ``\mid" \\
+    \nterm{op-prec8} &\Coloneqq \terms{and} \\
+    \nterm{op-prec9} &\Coloneqq \terms{or} \\
 \end{aligned}
 $$

@@ -43,7 +43,16 @@ An environment is a mapping of identifiers to element IDs.
 
  $$\mathrm{parent} \thickspace \mathtt{with} \thickspace [ \mathrm{ident} ] = \nterm{element-id} $$
 
+### Prelude Environment
 
+Wrought defines a prelude environment that acts as the baseline that module elements are added to or over.
+This is where any WASM features that are exposed as Functions are bound to make them accessible to user code.
+
+Function-like Intrinsics
+ * Rotate Left (`rotl`)
+ * Rotate Right (`rotr`)
+ * Round (`round`)
+ * Minimum and Maximum (`min`, `max`)
 
 ### Module Environment
 
