@@ -2,6 +2,7 @@
 description: 'The definition of the lexical structure of Wrought source code'
 sidebar: 'sidebar'
 next: '/spec/semantics/'
+prev: '/spec/'
 ---
 
 # Syntax

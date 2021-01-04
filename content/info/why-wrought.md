@@ -9,7 +9,7 @@ next: '/info/get-involved/'
 
 Much of the introductory content about WebAssembly starts off very simple with short examples that
  * use a limited subset of WebAssembly features,
- * use WAT or WAST to write or examine WASM modules,
+ * use WAT or WAST to write or represent WASM modules,
  * instantiate WebAssembly modules directly using JS APIs.
 
 The next level of content available jumps very far forward to setting up complex bundled compile-to-WebAssembly projects
