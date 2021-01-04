@@ -6,15 +6,25 @@ next: '/spec/semantics/'
 
 # Syntax
 
+Wrought is a programming language defined as a context-free grammar over an alphabet of tokens.
+
+## Convention
+
+* Terminals are written in one of the following forms $\term{u32}, \term{for}, \terms{::}$
+* Terminals may be defined using regular expression patterns, as in $/\verb@[0-9]a*@/$
+* Non-terminals are written in the following way $\nterm{literal-num}, \nterm{expr}$
+* Grammar productions are of the form $\nterm{a} \Coloneqq \thickspace ...$, where the right-hand side is a combination of terminals and non-terminals
+* Grammar productions can be combined using the or operator, as in $\nterm{a} \Coloneqq \thickspace ... \mid ...$
+
 ## Tokens
-The following paragraphs define, in precedence order, the kinds of tokens defined in Wrought.
 Wrought source code is split into tokens by repeatedly consuming the longest string of characters that matches a token rule,
 and tie-breaking by precedence order.
+Tokens are defined in precedence order by this document.
 
 ### Comments
 Wrought allows only single-line double-slash prefixed comments.
 $$
-\nterm{comment} \Coloneqq /\verb@//[^\n]*@/
+/\verb@//[^\n]*@/
 $$
 
 ### String Literals
@@ -25,14 +35,14 @@ Wrought provides two ways of defining strings interpretted as UTF-8 byte values 
 ### Whitespace
 Wrought treats sequences of contiguous whitespace characters as a whitespace token.
 $$
-\nterm{ws} \Coloneqq /\verb@[ \n\t\f]+@/
+/\verb@[ \n\t\f]+@/
 $$
 
-### Keywords
+### Keywords / Reserved Words
 
 | Kind          | Tokens |
 | ------------- | ------ |
-| module        | $\term{export}, \term{import}, \term{from}, \term{fn}, \term{table}, \term{mem}$ |
+| item          | $\term{export}, \term{import}, \term{from}, \term{fn}, \term{table}, \term{mem}$ |
 | control       | $\term{if}, \term{for}, \term{in}, \term{loop}, \term{break}, \term{continue}, \term{return}$ |
 | pointer types | $ \term{Ptr}, \term{Slice}$ |
 | int types     | $\term{i8}, \term{i16}, \term{i32}, \term{i64}, \term{s8}, \term{s16}, \term{s32}, \term{s64}, \term{u8}, \term{u16}, \term{u32}, \term{u64}$ |
@@ -44,34 +54,37 @@ $$
 | Kind              | Tokens |
 | ----------------- | ------ |
 | paired            | $\terms{[}, \terms{]}, \terms{(}, \terms{)}, \terms{\{}, \terms{\}}$ |
-| delimiters        | $\terms{,}, \terms{.}, \terms{::}, \terms{;}$ |
+| delimiters        | $\terms{,}, \terms{.}, \terms{::}, \terms{;}, \terms{@}$ |
 | misc              | $\terms{..}, \terms{:}, \terms{->}$ |
 | arithmetic        | $\terms{+}, \terms{+=}, \terms{-}, \terms{-=}, \terms{*}, \terms{*=}, \terms{/}, \terms{/=}$ |
 | bitwise / logical | $\term{!}, ``\vert", ``\vert\term{=}", \terms{\verb@&@}, \terms{\verb@&=@}, \terms{\verb@^@}, \terms{\verb@^=@}$ |
 | comparison        | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
 
 ### Identifiers
-Wrought identifiers are made up of one underscore or letter followed by zero or more letters, underscores, or digits.
-
 $$
-\nterm{ident} \coloneqq /\verb@[_a-zA-Z][_a-zA-Z0-9]*@/
+/\verb@[_a-zA-Z][_a-zA-Z0-9]*@/
 $$
 
 ### Numeric Literals
-$$
-\begin{aligned}
-    \nterm{literal-num} &\Coloneqq /\verb@[-+]?[1-9][0-9]*(\.[0-9]*)@/ \\ 
-    \nterm{literal-num} &\Coloneqq /\verb@0b[01]+@/ \\
-    \nterm{literal-num} &\Coloneqq /\verb@0x[0-9a-fA-F][0-9a-fA-F]@/ \\
-\end{aligned}
-$$
+* Decimal - $/\verb@[-+]?[1-9][0-9]*(\.[0-9]*)@/$
+* Binary - $/\verb@0b[01]+@/$
+* Hexadecimal - $/\verb@0x[0-9a-fA-F][0-9a-fA-F]@/$
 
 
 ## Grammar
-The Wrought language is defined using a context-free grammar where the terminals are tokens produced by the lexer.
 The grammar is written in Backus-Naur Form, with the addition of the Kleene-Star operator.
 The grammar implicitly allows white-space and comment tokens to be added between the tokens of any production rule,
 these are omitted from the parse tree and abstract syntax tree.
+
+As a convenience, some groups of terminals can be referred to using non-terminal-like names.
+
+$$
+\begin{aligned}
+    \nterm{ident} &\Coloneqq \textit{An identifier token} \\
+    \nterm{literal-num} &\Coloneqq \textit{A numeric literal token} \\
+    \nterm{literal-str} &\Coloneqq \textit{A string literal token} \\
+\end{aligned}
+$$
 
 ### Types
 
@@ -94,8 +107,8 @@ $$
     \nterm{valtype} &\Coloneqq \nterm{basic-val} \mid \nterm{pointer-val} \mid \nterm{ident} \\ 
     \nterm{basic-val} &\Coloneqq \term{i32} \mid \term{i64} \mid \term{u32} \mid \term{u64} \mid \term{s32} \mid \term{s64} \mid \term{f32} \mid \term{f64} \mid \term{bool} \\
     \nterm{pointer-val} &\Coloneqq \term{Ptr} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \mid \term{Slice} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \\
-    \nterm{p-options} &\Coloneqq \lambda \mid  \term{,} \nterm{NNI} \mid  \term{,} \nterm{NNI} \term{,} \nterm{NNI} \mid  \term{,} \nterm{NNI} \term{,} \nterm{NNI} \term{,} \nterm{NNI} \\
-    \nterm{NNI} &\Coloneqq \textit{non-negative integer} \\
+    \nterm{p-options} &\Coloneqq \lambda \mid  \term{,} \nterm{num} \mid  \term{,} \nterm{num} \term{,} \nterm{num} \mid  \term{,} \nterm{num} \term{,} \nterm{num} \term{,} \nterm{num} \\
+    \nterm{num} &\Coloneqq \nterm{literal-num} \\
 \end{aligned}
 $$
 
@@ -180,8 +193,10 @@ $$
 \begin{aligned}
     \nterm{global} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
     \nterm{global} &\Coloneqq \term{let} \thickspace \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
-    \nterm{static} &\Coloneqq \term{let} \thickspace \nterm{ident} \thickspace \term{@} \thickspace \nterm{static-loc} \thickspace  \term{=} \nterm{literal-num} \term{;} \\
+    \nterm{static} &\Coloneqq \term{let} \thickspace \nterm{ident} \thickspace \term{@} \thickspace \nterm{static-loc} \thickspace  \term{=} \nterm{static-val} \term{;} \\
     \nterm{static-loc} &\Coloneqq \nterm{ident} \term{[} \nterm{literal-num} \term{:} \nterm{literal-num} \term{]} \\
+    \nterm{static-val} &\Coloneqq \term{[} \textit{comma-separated literal-nums} \term{]} \\
+    \nterm{static-val} &\Coloneqq \nterm{literal-num} \mid  \nterm{literal-str} \\
 \end{aligned}
 $$
 
