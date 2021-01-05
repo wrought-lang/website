@@ -242,49 +242,48 @@ $$
 $$
 
 #### Inline Expressions
-Inline Expressions are used in various value positions,
-like function call arguments, right-hand side of assignments, and within unary or binary operations.
+Inline Expressions are used in value positions within
+ * statements (e.g. assign),
+ * other inline expressions (e.g. function call),
+ * and certain item definitions (e.g. global variables).
+
+The $\nterm{expr}$ non-terminal represents the "top" or "root" of an inline expression tree.
+The $\nterm{expr-bot}$ non-terminal represents the "bottom" of an inline expression tree and include things like literals and function calls.
+The $\nterm{expr}$ non-terminal produces $\nterm{expr-bot}$ through fall-through productions (e.g. expr-p7 -> expr-p6) or binary operator productions.
+Some productions "reset" an expression top to a bottom, like parenthesis and inline-ifs and in so doing allow for further recursion.
 
 $$
 \begin{aligned}
-    \nterm{expr} &\Coloneqq \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{expr} &\Coloneqq \term{(} \nterm{expr} \term{)} \\
-    \nterm{expr} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \\
-    \nterm{expr} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \; \term{else} \; \term{\{} \nterm{expr} \term{\}} \\
-    \nterm{expr} &\Coloneqq \nterm{ident} (\term{::} \nterm{ident})^\ast \\
-    \nterm{expr} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
-    \nterm{expr} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
-    \nterm{expr} &\Coloneqq \nterm{unary-op} \nterm{expr} \\
-    \nterm{expr} &\Coloneqq \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
+    \nterm{expr} &\Coloneqq \nterm{expr} \; \nterm{binop9} \; \nterm{expr-p8} \mid \nterm{expr-p8} \\
+    \nterm{expr-p8} &\Coloneqq \nterm{expr-p8} \; \nterm{binop8} \; \nterm{expr-p7} \mid \nterm{expr-p7} \\
+    \nterm{expr-p7} &\Coloneqq \nterm{expr-p7} \; \nterm{binop7} \; \nterm{expr-p6} \mid \nterm{expr-p6} \\
+    \nterm{expr-p6} &\Coloneqq \nterm{expr-p6} \; \nterm{binop6} \; \nterm{expr-p5} \mid \nterm{expr-p5} \\
+    \nterm{expr-p5} &\Coloneqq \nterm{expr-p5} \; \nterm{binop5} \; \nterm{expr-p4} \mid \nterm{expr-p4} \\
+    \nterm{expr-p4} &\Coloneqq \nterm{expr-p4} \; \nterm{binop4} \; \nterm{expr-p3} \mid \nterm{expr-p3} \\
+    \nterm{expr-p3} &\Coloneqq \nterm{expr-p3} \; \nterm{binop3} \; \nterm{expr-p2} \mid \nterm{expr-p2} \\
+    \nterm{expr-p2} &\Coloneqq \nterm{expr-p2} \; \nterm{binop2} \; \nterm{expr-p1} \mid \nterm{expr-p1} \\
+    \nterm{expr-p1} &\Coloneqq \nterm{expr-p1} \; \nterm{binop1} \; \nterm{expr-p0} \mid \nterm{expr-p0} \\
+    \nterm{expr-p0} &\Coloneqq \nterm{expr-p0} \; \nterm{binop0} \; \nterm{expr-bot} \mid \nterm{expr-bot} \\
+    \nterm{expr-bot} &\Coloneqq \term{(} \; \nterm{expr} \; \term{)} \\
+    \nterm{expr-bot} &\Coloneqq \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \; \term{else} \; \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{ident} (\term{::} \nterm{ident})^\ast \\
+    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{unop} \nterm{expr} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
     \nterm{expr-args} &\Coloneqq \nterm{expr} \mid \nterm{expr-args} \term{,} \nterm{expr} \\
-    \nterm{unary-op} &\Coloneqq \term{!} \mid \term{-} \mid \term{*} \\
-\end{aligned}
-$$
-
-The expressions of binary operators are defined below and have grammatically encoded precedence.
-
-$$
-\begin{aligned}
-    \nterm{expr} &\Coloneqq \nterm{expr-p9} \\
-    \nterm{expr-p9} &\Coloneqq \nterm{expr-p9} \; \nterm{op-prec9} \; \nterm{expr-p8} \mid \nterm{expr-p8} \\
-    \nterm{expr-p8} &\Coloneqq \nterm{expr-p8} \; \nterm{op-prec8} \; \nterm{expr-p7} \mid \nterm{expr-p7} \\
-    \nterm{expr-p7} &\Coloneqq \nterm{expr-p7} \; \nterm{op-prec7} \; \nterm{expr-p6} \mid \nterm{expr-p6} \\
-    \nterm{expr-p6} &\Coloneqq \nterm{expr-p6} \; \nterm{op-prec6} \; \nterm{expr-p5} \mid \nterm{expr-p5} \\
-    \nterm{expr-p5} &\Coloneqq \nterm{expr-p5} \; \nterm{op-prec5} \; \nterm{expr-p4} \mid \nterm{expr-p4} \\
-    \nterm{expr-p4} &\Coloneqq \nterm{expr-p4} \; \nterm{op-prec4} \; \nterm{expr-p3} \mid \nterm{expr-p3} \\
-    \nterm{expr-p3} &\Coloneqq \nterm{expr-p3} \; \nterm{op-prec3} \; \nterm{expr-p2} \mid \nterm{expr-p2} \\
-    \nterm{expr-p2} &\Coloneqq \nterm{expr-p2} \; \nterm{op-prec2} \; \nterm{expr-p1} \mid \nterm{expr-p1} \\
-    \nterm{expr-p1} &\Coloneqq \nterm{expr-p1} \; \nterm{op-prec1} \; \nterm{expr-p0} \mid \nterm{expr-p0} \\
-    \nterm{expr-p0} &\Coloneqq \nterm{expr-p0} \; \nterm{op-prec0} \; \nterm{expr} \mid \nterm{expr} \\
-    \nterm{op-prec0} &\Coloneqq \terms{*}, \terms{/}, \terms{\verb@%@} \\
-    \nterm{op-prec1} &\Coloneqq \terms{+}, \terms{-} \\
-    \nterm{op-prec2} &\Coloneqq \terms{<<}, \terms{>>}, \terms{>>>} \\
-    \nterm{op-prec3} &\Coloneqq \terms{<}, \terms{<=}, \terms{>}, \terms{>=} \\
-    \nterm{op-prec4} &\Coloneqq \terms{==}, \terms{!=} \\
-    \nterm{op-prec5} &\Coloneqq \terms{\&} \\
-    \nterm{op-prec6} &\Coloneqq \terms{\verb@^@} \\
-    \nterm{op-prec7} &\Coloneqq ``\mid" \\
-    \nterm{op-prec8} &\Coloneqq \terms{and} \\
-    \nterm{op-prec9} &\Coloneqq \terms{or} \\
+    \nterm{unop} &\Coloneqq \term{!} \mid \term{-} \mid \term{*} \\
+    \nterm{binop0} &\Coloneqq \terms{*}, \terms{/}, \terms{\verb@%@} \\
+    \nterm{binop1} &\Coloneqq \terms{+}, \terms{-} \\
+    \nterm{binop2} &\Coloneqq \terms{<<}, \terms{>>}, \terms{>>>} \\
+    \nterm{binop3} &\Coloneqq \terms{<}, \terms{<=}, \terms{>}, \terms{>=} \\
+    \nterm{binop4} &\Coloneqq \terms{==}, \terms{!=} \\
+    \nterm{binop5} &\Coloneqq \terms{\&} \\
+    \nterm{binop6} &\Coloneqq \terms{\verb@^@} \\
+    \nterm{binop7} &\Coloneqq ``\mid" \\
+    \nterm{binop8} &\Coloneqq \terms{and} \\
+    \nterm{binop9} &\Coloneqq \terms{or} \\
 \end{aligned}
 $$
