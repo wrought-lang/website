@@ -44,3 +44,6 @@ This could be a valuable tool for reverse engineering, debugging, or understandi
 ## Why is it called Wrought?
 
 The name is Wrought as in wrought iron (which rusts easily) and stands for WebAssembly, Rust, ...
+
+
+Fun fact: the logo for Wrought has a W in it
