@@ -78,13 +78,12 @@ The grammar is written in Backus-Naur Form, with the addition of the Kleene-Star
 The grammar implicitly allows white-space and comment tokens to be added between the tokens of any production rule,
 these are omitted from the parse tree and abstract syntax tree.
 
-As a convenience, some groups of terminals can be referred to using non-terminal-like names.
+As a convenience, some sets of terminals are represented by non-terminals which are defined using a production rule to a description of the set.
+The identifiers are one such example of this pattern.
 
 $$
 \begin{aligned}
     \nterm{ident} &\Coloneqq \textit{An identifier token} \\
-    \nterm{literal-num} &\Coloneqq \textit{A numeric literal token} \\
-    \nterm{literal-str} &\Coloneqq \textit{A string literal token} \\
 \end{aligned}
 $$
 
@@ -131,7 +130,7 @@ A function with an empty result can omit the arrow clause or use the unit type.
 
 $$
 \begin{aligned}
-    \nterm{fntype} &\Coloneqq \term{fn} \term{(} \nterm{valtype}^\ast \term{)} \term{->} \nterm{restype} \\
+    \nterm{fntype} &\Coloneqq \term{fn} \term{(} \nterm{valtype}^\ast \term{)} \; \term{->} \; \nterm{restype} \\
     \nterm{fntype} &\Coloneqq \term{fn} \term{(} \nterm{valtype}^\ast \term{)} \\
 \end{aligned}
 $$
@@ -183,7 +182,7 @@ $$
 $$
 \begin{aligned}
     \nterm{table} &\Coloneqq \term{table} \; \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
-    \nterm{mem} &\Coloneqq \term{memory} \; \nterm{ident} \term{[} \nterm{literal-num} \term{]} \term{;} \\
+    \nterm{mem} &\Coloneqq \term{let} \; \nterm{ident} \; \term{=} \; \term{mem} \term{[} \nterm{literal-num} \term{]} \term{;} \\
     \nterm{ident-array} &\Coloneqq \term{[} \nterm{idents} \term{]} \\
     \nterm{exprs} &\Coloneqq \nterm{inline-expr} \mid \nterm{nums} \term{,} \nterm{inline-expr} \\
 \end{aligned}
@@ -195,7 +194,7 @@ $$
 \begin{aligned}
     \nterm{global} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
     \nterm{global} &\Coloneqq \term{let} \; \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
-    \nterm{static} &\Coloneqq \term{let} \; \nterm{ident} \; \term{@} \; \nterm{static-loc} \;  \term{=} \nterm{static-val} \term{;} \\
+    \nterm{static} &\Coloneqq \term{at} \; \nterm{static-loc} \; \term{let} \;\nterm{ident} \; \term{@} \; \nterm{static-loc} \;  \term{=} \nterm{static-val} \term{;} \\
     \nterm{static-loc} &\Coloneqq \nterm{ident} \term{[} \nterm{literal-num} \term{:} \nterm{literal-num} \term{]} \\
     \nterm{static-val} &\Coloneqq \term{[} \textit{comma-separated literal-nums} \term{]} \\
     \nterm{static-val} &\Coloneqq \nterm{literal-num} \mid  \nterm{literal-str} \\
@@ -223,8 +222,8 @@ $$
     \nterm{stmt} &\Coloneqq \nterm{stmt-end} \\
     \nterm{stmt} &\Coloneqq \lambda \\
     \nterm{stmt-entry} &\Coloneqq \nterm{expr} \term{;} \\
-    \nterm{stmt-entry} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \; \term{else} \;  \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{stmt-entry} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \; \nterm{else-block}? \\
+    \nterm{else-block} &\Coloneqq \term{else} \; \term{\{} \nterm{stmt} \term{\}} \\
     \nterm{stmt-entry} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
     \nterm{stmt-entry} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \term{..} \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
     \nterm{stmt-entry} &\Coloneqq \term{loop} \;  \term{\{} \nterm{stmt} \term{\}} \\
@@ -234,9 +233,9 @@ $$
     \nterm{lvalue} &\Coloneqq \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{.} \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{[} \nterm{expr} \term{]} \\
-    \nterm{stmt-end} &\Coloneqq \term{break} \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \term{break} \; \nterm{expr}? \; \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \term{return} \; \nterm{expr}? \; \term{;} \\
     \nterm{stmt-end} &\Coloneqq \term{continue} \term{;} \\
-    \nterm{stmt-end} &\Coloneqq \term{return} \; \nterm{expr} \term{;} \\
     \nterm{stmt-end} &\Coloneqq \nterm{expr} \\
 \end{aligned}
 $$
@@ -268,11 +267,16 @@ $$
     \nterm{expr-bot} &\Coloneqq \term{\{} \nterm{stmt} \term{\}} \\
     \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \\
     \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \; \term{else} \; \term{\{} \nterm{expr} \term{\}} \\
-    \nterm{expr-bot} &\Coloneqq \nterm{ident} (\term{::} \nterm{ident})^\ast \\
     \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
     \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{:} \nterm{expr} \term{]} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{:} \term{]} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \term{:} \nterm{expr} \term{]} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \term{:} \term{]} \\
     \nterm{expr-bot} &\Coloneqq \nterm{unop} \nterm{expr} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{ident} (\term{::} \nterm{ident})^\ast \\
     \nterm{expr-bot} &\Coloneqq \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{ident}  \term{.} \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
     \nterm{expr-args} &\Coloneqq \nterm{expr} \mid \nterm{expr-args} \term{,} \nterm{expr} \\
     \nterm{unop} &\Coloneqq \term{!} \mid \term{-} \mid \term{*} \\
     \nterm{binop0} &\Coloneqq \terms{*}, \terms{/}, \terms{\verb@%@} \\
@@ -285,5 +289,16 @@ $$
     \nterm{binop7} &\Coloneqq ``\mid" \\
     \nterm{binop8} &\Coloneqq \terms{and} \\
     \nterm{binop9} &\Coloneqq \terms{or} \\
+\end{aligned}
+$$
+
+### Literals
+$$
+\begin{aligned}
+    \nterm{literal-num} &\Coloneqq \textit{A numeric literal token} \\
+    \nterm{literal-str} &\Coloneqq \textit{A string literal token} \\
+    \nterm{literal-struct} &\Coloneqq \nterm{ident} \; \terms{\{} \; \nterm{struct-lit-body} \; \terms{\}} \\
+    \nterm{struct-lit-body} &\Coloneqq \nterm{struct-lit-entry} \mid \nterm{struct-lit-body} \; \terms{,} \; \nterm{struct-lit-entry} \\
+    \nterm{struct-lit-entry} &\Coloneqq \nterm{ident} \; \terms{:} \; \nterm{expr} \\
 \end{aligned}
 $$
