@@ -46,19 +46,20 @@ $$
 | item          | $\term{export}, \term{import}, \term{from}, \term{fn}, \term{table}, \term{mem}$ |
 | control       | $\term{if}, \term{for}, \term{in}, \term{loop}, \term{break}, \term{continue}, \term{return}$ |
 | pointer types | $ \term{Ptr}, \term{Slice}$ |
-| int types     | $\term{i8}, \term{i16}, \term{i32}, \term{i64}, \term{s8}, \term{s16}, \term{s32}, \term{s64}, \term{u8}, \term{u16}, \term{u32}, \term{u64}$ |
+| int types     | $\term{u8}, \term{u16}, \term{u32}, \term{u64}, \term{s8}, \term{s16}, \term{s32}, \term{s64}, \term{i32}, \term{i64}$ |
 | float types   | $\term{f32}, \term{f64}$ |
-| misc          | $\term{as}, \term{let}$, $\term{bool}$, $\term{or}$, $\term{and}$ |
+| misc          | $\term{as}, \term{at}, \term{let}, \term{mut}, \term{bool}, \term{true}, \term{false}$ |
 
 ### Symbols and Operators
 
 | Kind       | Tokens |
 | ---------- | ------ |
-| paired     | $\terms{[}, \terms{]}, \terms{(}, \terms{)}, \terms{\{}, \terms{\}}$ |
-| delimiters | $\terms{,}, \terms{.}, \terms{::}, \terms{;}, \terms{@}$ |
-| misc       | $\terms{..}, \terms{:}, \terms{->}$ |
+| paired     | $\terms{(}, \terms{)}, \terms{\{}, \terms{\}}, \terms{[}, \terms{]}$ |
+| delimiters | $\terms{,}, \terms{.}, \terms{..}, \terms{:}, \terms{::}, \terms{;}$ |
+| misc       | $\terms{=}, \terms{->}$ |
 | arithmetic | $\terms{+}, \terms{-}, \terms{*}, \terms{/}, \terms{\verb@%@}$ |
-| bitwise    | $\terms{!}, ``\vert", \terms{\verb@&@}, \terms{\verb@^@}, \terms{>>}, \terms{>>}, \terms{>>}, \terms{>>>}$ |
+| logical    | $\terms{!}, \term{or}, \term{and}$ |
+| bitwise    | $``\vert", \terms{\verb@&@}, \terms{\verb@^@}, \terms{<<}, \terms{>>}, \terms{>>>}$ |
 | op assign  | $``\vert\term{=}", \terms{\verb@&=@}, \terms{\verb@^=@}, \terms{+=}, \terms{-=}, \terms{*=}, \terms{/=}$ |
 | comparison | $\terms{<}, \terms{<=}, \terms{>}, \terms{>=}, \terms{==}, \terms{!=}$ |
 
@@ -68,9 +69,9 @@ $$
 $$
 
 ### Numeric Literals
-* Decimal - $/\verb@[-+]?[1-9][0-9]*(\.[0-9]*)@/$
-* Binary - $/\verb@0b[01]+@/$
-* Hexadecimal - $/\verb@0x[0-9a-fA-F][0-9a-fA-F]@/$
+* Decimal - $/\verb@[0-9][_0-9]*(\.[0-9][_0-9]*)?@/$
+* Binary - $/\verb@0b[01][_01]*@/$
+* Hexadecimal - $/\verb@0x[0-9a-fA-F][_0-9a-fA-F]*@/$
 
 
 ## Grammar
