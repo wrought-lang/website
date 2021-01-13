@@ -108,20 +108,21 @@ $$
 \begin{aligned}
     \nterm{valtype} &\Coloneqq \nterm{basic-val} \mid \nterm{pointer-val} \mid \nterm{ident} \\ 
     \nterm{basic-val} &\Coloneqq \term{i32} \mid \term{i64} \mid \term{u32} \mid \term{u64} \mid \term{s32} \mid \term{s64} \mid \term{f32} \mid \term{f64} \mid \term{bool} \\
-    \nterm{pointer-val} &\Coloneqq \term{Ptr} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \mid \term{Slice} \term{[} \nterm{memtype} \nterm{p-options} \term{]} \\
-    \nterm{p-options} &\Coloneqq \lambda \mid  \term{,} \nterm{num} \mid  \term{,} \nterm{num} \term{,} \nterm{num} \mid  \term{,} \nterm{num} \term{,} \nterm{num} \term{,} \nterm{num} \\
+    \nterm{pointer-val} &\Coloneqq \term{Ptr} \term{[} \nterm{pointable} \nterm{p-options} \term{]} \mid \term{Slice} \term{[} \nterm{pointable} \nterm{p-options} \term{]} \\
+    \nterm{p-options} &\Coloneqq \lambda \mid  \term{,} \nterm{num} \mid  \term{,} \nterm{num} \term{,} \nterm{num} \mid  \term{,} \nterm{num} \term{,} \nterm{num} \term{,} \nterm{ident} \\
     \nterm{num} &\Coloneqq \nterm{literal-num} \\
 \end{aligned}
 $$
 
-#### Memory Types
+#### Pointable Types
 The types that can be loaded from and stored to the WASM linear memory (a superset of the Value Types).
+It is possible to make pointers to these types.
 
 
 $$
 \begin{aligned}
-    \nterm{memtype} &\Coloneqq \nterm{valtype} \mid \nterm{memonly-val} \\
-    \nterm{memonly-val} &\Coloneqq \term{i8} \mid \term{i16} \mid \term{u8} \mid \term{u16} \mid \term{s8} \mid \term{s16} \\
+    \nterm{pointable} &\Coloneqq \nterm{valtype} \mid \nterm{memonly-val} \\
+    \nterm{memonly-val} &\Coloneqq \term{u8} \mid \term{u16} \mid \term{s8} \mid \term{s16} \mid \term{i8} \mid \term{i16} \\
 \end{aligned}
 $$
 
@@ -158,7 +159,7 @@ Exports are not a special type of item, instead any item can be annotated with t
 
 $$
 \begin{aligned}
-    \nterm{import} &\Coloneqq \term{from} \nterm{ident} \term{import} \nterm{ident} \term{:} \nterm{importtype} \term{;} \\
+    \nterm{import} &\Coloneqq \term{from} \; \nterm{ident} \; \term{import} \; \nterm{ident} \term{:} \nterm{external} \term{;} \\
     \nterm{external} &\Coloneqq \nterm{fntype} \mid \nterm{memtype} \mid \term{mut} \nterm{valtype} \mid \term{const} \nterm{valtype} \\
     \nterm{memtype} &\Coloneqq \term{mem} \term{[} \nterm{memtype-bounds} \term{]} \\
     \nterm{memtype-bounds} &\Coloneqq \nterm{literal-num} \\
@@ -171,7 +172,7 @@ A function is a named parameterized expression which may have side effects and b
 
 $$
 \begin{aligned}
-    \nterm{func} &\Coloneqq \nterm{func-sig} \term{\{} \nterm{stmt} \term{\}} \\
+    \nterm{func} &\Coloneqq \term{export}^? \; \nterm{func-sig} \; \nterm{block} \\
     \nterm{func-sig} &\Coloneqq \term{fn} \nterm{ident} \term{(} \nterm{func-args} \term{)} \term{->} \nterm{restype} \\
     \nterm{func-sig} &\Coloneqq \term{fn} \nterm{ident} \term{(} \nterm{func-args} \term{)} \\
     \nterm{func-args} &\Coloneqq \nterm{ident} \term{:} \nterm{valtype} \mid \nterm{func-args} \term{,} \nterm{ident} \term{:} \nterm{valtype} \\
@@ -195,7 +196,7 @@ $$
 \begin{aligned}
     \nterm{global} &\Coloneqq \term{let} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
     \nterm{global} &\Coloneqq \term{let} \; \term{mut} \nterm{ident} \term{=} \nterm{literal-num} \term{;} \\
-    \nterm{static} &\Coloneqq \term{at} \; \nterm{static-loc} \; \term{let} \;\nterm{ident} \; \term{@} \; \nterm{static-loc} \;  \term{=} \nterm{static-val} \term{;} \\
+    \nterm{static} &\Coloneqq \term{at} \; \nterm{static-loc} \; \term{let} \;\nterm{ident} \;  \term{=} \; \nterm{static-val} \term{;} \\
     \nterm{static-loc} &\Coloneqq \nterm{ident} \term{[} \nterm{literal-num} \term{:} \nterm{literal-num} \term{]} \\
     \nterm{static-val} &\Coloneqq \term{[} \textit{comma-separated literal-nums} \term{]} \\
     \nterm{static-val} &\Coloneqq \nterm{literal-num} \mid  \nterm{literal-str} \\
@@ -219,23 +220,20 @@ The type of a statement depends on the type of the statements terminator $\nterm
 
 $$
 \begin{aligned}
-    \nterm{stmt} &\Coloneqq \nterm{stmt-entry} \nterm{stmt} \\
-    \nterm{stmt} &\Coloneqq \nterm{stmt-end} \\
-    \nterm{stmt} &\Coloneqq \lambda \\
-    \nterm{stmt-entry} &\Coloneqq \nterm{expr} \term{;} \\
-    \nterm{stmt-entry} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \; \nterm{else-block}? \\
-    \nterm{else-block} &\Coloneqq \term{else} \; \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \term{..} \nterm{expr} \; \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{loop} \;  \term{\{} \nterm{stmt} \term{\}} \\
-    \nterm{stmt-entry} &\Coloneqq \term{let} \; \term{mut} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
-    \nterm{stmt-entry} &\Coloneqq \term{let} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
-    \nterm{stmt-entry} &\Coloneqq \nterm{lvalue} \; \term{=} \; \nterm{expr} \term{;} \\
+    \nterm{block} &\Coloneqq \term{\{} \; \nterm{stmt}^\ast \; \nterm{stmt-end}^? \; \term{\}} \\
+    \nterm{stmt} &\Coloneqq \nterm{expr} \term{;} \\
+    \nterm{stmt} &\Coloneqq \term{if} \; \nterm{expr} \; \nterm{block} \; (\term{else} \; \nterm{block})^? \\
+    \nterm{stmt} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \; \nterm{block} \\
+    \nterm{stmt} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \term{..} \nterm{expr} \; \nterm{block} \\
+    \nterm{stmt} &\Coloneqq \term{loop} \;  \nterm{block} \\
+    \nterm{stmt} &\Coloneqq \term{let} \; \term{mut} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
+    \nterm{stmt} &\Coloneqq \term{let} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
+    \nterm{stmt} &\Coloneqq \nterm{lvalue} \; \term{=} \; \nterm{expr} \term{;} \\
     \nterm{lvalue} &\Coloneqq \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{.} \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{[} \nterm{expr} \term{]} \\
-    \nterm{stmt-end} &\Coloneqq \term{break} \; \nterm{expr}? \; \term{;} \\
-    \nterm{stmt-end} &\Coloneqq \term{return} \; \nterm{expr}? \; \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \term{break} \; \nterm{expr}^? \; \term{;} \\
+    \nterm{stmt-end} &\Coloneqq \term{return} \; \nterm{expr}^? \; \term{;} \\
     \nterm{stmt-end} &\Coloneqq \term{continue} \term{;} \\
     \nterm{stmt-end} &\Coloneqq \nterm{expr} \\
 \end{aligned}
@@ -264,16 +262,13 @@ $$
     \nterm{expr-p2} &\Coloneqq \nterm{expr-p2} \; \nterm{binop2} \; \nterm{expr-p1} \mid \nterm{expr-p1} \\
     \nterm{expr-p1} &\Coloneqq \nterm{expr-p1} \; \nterm{binop1} \; \nterm{expr-p0} \mid \nterm{expr-p0} \\
     \nterm{expr-p0} &\Coloneqq \nterm{expr-p0} \; \nterm{binop0} \; \nterm{expr-bot} \mid \nterm{expr-bot} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{block} \\
     \nterm{expr-bot} &\Coloneqq \term{(} \; \nterm{expr} \; \term{)} \\
-    \nterm{expr-bot} &\Coloneqq \term{\{} \nterm{stmt} \term{\}} \\
     \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \\
     \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \; \term{else} \; \term{\{} \nterm{expr} \term{\}} \\
     \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
     \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
-    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{:} \nterm{expr} \term{]} \\
-    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{:} \term{]} \\
-    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \term{:} \nterm{expr} \term{]} \\
-    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \term{:} \term{]} \\
+    \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr}^? \term{:} \nterm{expr}^? \term{]} \\
     \nterm{expr-bot} &\Coloneqq \nterm{unop} \nterm{expr} \\
     \nterm{expr-bot} &\Coloneqq \nterm{ident} (\term{::} \nterm{ident})^\ast \\
     \nterm{expr-bot} &\Coloneqq \nterm{ident} \term{(} \nterm{expr-args} \term{)} \\
