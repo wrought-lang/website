@@ -223,12 +223,14 @@ $$
     \nterm{block} &\Coloneqq \term{\{} \; \nterm{stmt}^\ast \; \nterm{stmt-end}^? \; \term{\}} \\
     \nterm{stmt} &\Coloneqq \nterm{expr} \term{;} \\
     \nterm{stmt} &\Coloneqq \term{if} \; \nterm{expr} \; \nterm{block} \; (\term{else} \; \nterm{block})^? \\
+    \nterm{stmt} &\Coloneqq \term{loop} \;  \nterm{block} \\
     \nterm{stmt} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \; \nterm{block} \\
     \nterm{stmt} &\Coloneqq \term{for} \; \nterm{ident} \; \term{in} \; \nterm{expr} \term{..} \nterm{expr} \; \nterm{block} \\
-    \nterm{stmt} &\Coloneqq \term{loop} \;  \nterm{block} \\
     \nterm{stmt} &\Coloneqq \term{let} \; \term{mut} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
     \nterm{stmt} &\Coloneqq \term{let} \; \nterm{ident} \; \term{=} \; \nterm{expr} \term{;} \\
     \nterm{stmt} &\Coloneqq \nterm{lvalue} \; \term{=} \; \nterm{expr} \term{;} \\
+    \nterm{stmt} &\Coloneqq \nterm{lvalue} \; \nterm{op-assign} \; \nterm{expr} \term{;} \\
+    \nterm{op-assign} &\Coloneqq \textit{See ``op assign" row of the symbols table}  \\
     \nterm{lvalue} &\Coloneqq \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{.} \nterm{ident} \\
     \nterm{lvalue} &\Coloneqq \nterm{lvalue} \term{[} \nterm{expr} \term{]} \\
@@ -264,8 +266,8 @@ $$
     \nterm{expr-p0} &\Coloneqq \nterm{expr-p0} \; \nterm{binop0} \; \nterm{expr-bot} \mid \nterm{expr-bot} \\
     \nterm{expr-bot} &\Coloneqq \nterm{block} \\
     \nterm{expr-bot} &\Coloneqq \term{(} \; \nterm{expr} \; \term{)} \\
-    \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \\
-    \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \term{\{} \nterm{expr} \term{\}} \; \term{else} \; \term{\{} \nterm{expr} \term{\}} \\
+    \nterm{expr-bot} &\Coloneqq \term{if} \; \nterm{expr} \; \nterm{block} \; (\nterm{else} \; \nterm{block})^? \\
+    \nterm{expr-bot} &\Coloneqq \term{loop} \;  \nterm{block} \\
     \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{.} \nterm{ident} \\
     \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr} \term{]} \\
     \nterm{expr-bot} &\Coloneqq \nterm{expr} \term{[} \nterm{expr}^? \term{:} \nterm{expr}^? \term{]} \\
